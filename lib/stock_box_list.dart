@@ -105,7 +105,7 @@ class BuySellCard extends StatelessWidget {
           children: [
             Text(
               tag,
-              style: TextStyle(color: Colors.blue[700], fontSize: 14),
+              style: TextStyle(color: Colors.blue[900], fontSize: 14),
             ),
             Text(
               value,
