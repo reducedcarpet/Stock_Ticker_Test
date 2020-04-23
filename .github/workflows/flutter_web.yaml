@@ -1,0 +1,31 @@
+#The name of your workflow.
+name:  Flutter Web Build
+# Trigger the workflow on push or pull request
+on: [push,pull_request]
+#A workflow run is made up of one or more jobs. Jobs run in parallel by default.
+jobs:
+  build_deploy:
+    #if conditional to prevent a job from running
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    #Identifies any jobs that must complete successfully before this job will run.
+    #needs: [drive_ios,drive_android,test]
+    name: Build web
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.12.14'
+          channel: 'dev'
+      #enable linux,macos,windows   and  web
+      - run: flutter  config --enable-web
+      - run: flutter pub get
+      # build Flutter web version
+      - run: flutter build web
+      # Handle the deploy process of your project to GitHub Pages.
+      # https://github.com/JamesIves/github-pages-deploy-action
+      - uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build/web
