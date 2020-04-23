@@ -20,10 +20,32 @@ class StockBoxList extends StatelessWidget {
   }
 }
 
-class StockBox extends StatelessWidget {
-  StockBox({Key key, this.item, this.selected}) : super(key: key);
+class StockBox extends StatefulWidget {
+  StockBox({this.item, this.selected, Key key}) : super(key: key);
+
   final Stock item;
   final bool selected;
+
+  @override
+  _StockBoxState createState() {
+    return _StockBoxState(item, selected);
+  }
+}
+
+class _StockBoxState extends State<StockBox> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  _StockBoxState(this.item, this.selected);
+  final Stock item;
+  bool selected;
 
   Widget build(BuildContext context) {
     bool negative = (this.item.percentage ?? 0) < 0;
@@ -31,48 +53,55 @@ class StockBox extends StatelessWidget {
     formattedPercentage =
         formattedPercentage.replaceAll('.', ','); // This should be a locale specific NumberFormat but I don't know what locale uses these constraints.
 
-    return Container(
-      padding: EdgeInsets.all(0),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selected = !selected;
+        });
+      },
       child: Container(
-        decoration: BoxDecoration(
-          color: selected ? Colors.blue[100] : Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey[200], width: 1)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              width: 150,
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(this.item.name ?? '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(
-                        formattedPercentage + '%',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: negative ? Colors.red : Colors.green),
-                      ),
-                    ],
+        padding: EdgeInsets.all(0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: selected ? Colors.blue[100] : Colors.white,
+            border: Border(bottom: BorderSide(color: Colors.grey[200], width: 1)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(
+                width: 150,
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(this.item.name ?? '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(
+                          formattedPercentage + '%',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: negative ? Colors.red : Colors.green),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: BuySellCard(item, negative, 'Sell'),
-            ),
-            Expanded(
-              child: BuySellCard(item, negative, 'Buy'),
-            ),
-            Icon(
-              Icons.chevron_right,
-              size: 36,
-              color: Colors.grey[400],
-            ),
-          ],
+              Expanded(
+                child: BuySellCard(item, negative, 'Sell'),
+              ),
+              Expanded(
+                child: BuySellCard(item, negative, 'Buy'),
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: 36,
+                color: Colors.grey[400],
+              ),
+            ],
+          ),
         ),
       ),
     );
